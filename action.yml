@@ -25,6 +25,11 @@ runs:
           if [[ "${state}" == "healthy" ]]; then
             echo "Container is healthy after ${i} seconds."
             exit 0
+          elif [[ "${state}" == "unhealthy" ]]; then
+            echo "Container is unhealthy after ${i} seconds. Restarting..."
+            docker restart ${{ inputs.name }}
+          else
+            echo "Container is unknown state after ${i} seconds."
           fi
           sleep 1
         done
