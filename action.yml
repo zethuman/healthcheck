@@ -9,13 +9,17 @@ inputs:
     required: false
     default: 120
     description: "Timeout in seconds. Default is 120 seconds"
+  interval:
+    required: false
+    default: 1
+    description: "Interval of checking in seconds. Default is 1 second"
 runs:
   using: "composite"
   steps:
     - name: "Check Status"
       shell: bash
       run: |
-        echo "Wait for container '${{ inputs.name }}' to be healthy for max ${{ inputs.timeout }} seconds..."
+        echo "Waiting '${{ inputs.name }}' to be healthy in ${{ inputs.timeout }} seconds..."
         for i in `seq ${{ inputs.timeout }}`; do
           state=$(docker inspect -f '{{ .State.Health.Status }}' ${{ inputs.name }})
           return_code=$?
@@ -29,7 +33,7 @@ runs:
             echo "Container is unhealthy after ${i} seconds. Restarting..."
             docker restart ${{ inputs.name }}
           fi
-          sleep 1
+          sleep ${{ inputs.interval }}
         done
-        echo "Timeout exceeded. Health status returned: $(docker inspect -f '{{ .State.Health.Status }}' ${{ inputs.name }})"
+        echo "Timeout exceeded. Try to increase timeout or find out the cause of the unhealthy container"
         exit 1
