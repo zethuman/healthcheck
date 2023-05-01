@@ -1,6 +1,9 @@
 name: "Container healthcheck"
 author: "zethuman"
 description: "Execute a job and check container status"
+branding:
+  icon: activity
+  color: red
 inputs:
   name:
     required: true
