@@ -1,4 +1,4 @@
-name: "Check Container Status"
+name: "Healthcheck"
 author: "zethuman"
 description: "Execute a job and check container status"
 inputs:
