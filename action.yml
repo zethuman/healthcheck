@@ -1,0 +1,42 @@
+name: "Check Container Status"
+author: "zethuman"
+description: "Execute a job and check container status"
+inputs:
+  name:
+    required: true
+    description: "Name of the container to check"
+  timeout:
+    required: false
+    default: 120
+    description: "Timeout in seconds. Default is 120 seconds"
+runs:
+  using: "composite"
+  steps:
+    - name: "Check Status"
+      shell: bash
+      run: |
+        echo "Wait for container '${{ inputs.name }}' to be healthy for max ${{ inputs.timeout }} seconds..."
+        for i in `seq ${{ inputs.timeout }}`; do
+          state=$(docker inspect -f '{{ .State.Health.Status }}' ${{ inputs.name }})
+          return_code=$?
+          if [ ! ${return_code} -eq 0 ]; then
+            exit ${RETURN_ERROR}
+          fi
+          if [[ "${state}" == "healthy" ]]; then
+            return ${RETURN_HEALTHY}
+          elif [[ "${state}" == "unhealthy" ]]; then
+            return ${RETURN_UNHEALTHY}
+          elif [[ "${state}" == "starting" ]]; then
+            return ${RETURN_STARTING}
+          else
+            return ${RETURN_UNKNOWN}
+          fi
+            state=$?
+          if [ ${state} -eq 0 ]; then
+            echo "Container is healthy after ${i} seconds."
+            exit 0
+          fi
+          sleep 1
+        done
+        echo "Timeout exceeded. Health status returned: $(docker inspect -f '{{ .State.Health.Status }}' ${{ inputs.name }})"
+        exit 1
