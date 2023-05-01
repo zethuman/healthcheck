@@ -23,16 +23,6 @@ runs:
             exit ${RETURN_ERROR}
           fi
           if [[ "${state}" == "healthy" ]]; then
-            return ${RETURN_HEALTHY}
-          elif [[ "${state}" == "unhealthy" ]]; then
-            return ${RETURN_UNHEALTHY}
-          elif [[ "${state}" == "starting" ]]; then
-            return ${RETURN_STARTING}
-          else
-            return ${RETURN_UNKNOWN}
-          fi
-            state=$?
-          if [ ${state} -eq 0 ]; then
             echo "Container is healthy after ${i} seconds."
             exit 0
           fi
