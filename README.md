@@ -15,7 +15,7 @@ This action is authored by "zethuman" and runs as a composite action, executing 
 ### Example usage
 
 ```yaml
-uses: zethuman/healthchecker@v0.0.1
+uses: zethuman/healthcheck@v0.0.1
 with:
   name: my-container
   timeout: 180
